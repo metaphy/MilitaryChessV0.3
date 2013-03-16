@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+
+<project name="MilitaryChess" basedir="." default="usage">
+	<property name="app.name" value="MilitaryChess" />
+	<property name="app.version" value="V0.3.5" />
+
+	<property name="src.dir" value="src" />
+	<property name="build.dir" value="build" />
+	<property name="dist.dir" value="dist" />
+	<property name="dist.jar" value="${dist.dir}/${app.name}${app.version}.jar" />
+	<property name="lib.dir" value="lib" />
+	<property name="classes.dir" value="${build.dir}/classes" />
+	<property name="main-class" value="com.javaeye.metaphy.game.Game" />
+
+	<path id="compile.classpath">
+		<pathelement location="${classes.dir}" />
+
+		<fileset dir="${lib.dir}">
+			<include name="*.jar" />
+		</fileset>
+	</path>
+
+	<target name="usage">
+		<echo message="" />
+		<echo message="Available targets are:" />
+		<echo message="" />
+		<echo message="clean --> Clean output directories" />
+		<echo message="compile --> Compile main source tree java files" />
+		<echo message="dist --> Create binary distribution" />
+		<echo message="run --> Run the distribution jar file" />
+		<echo message="" />
+	</target>
+
+	<target name="clean" description="Clean output directories">
+		<delete>
+			<fileset dir="${build.dir}">
+				<include name="**/*.class" />
+			</fileset>
+		</delete>
+		<delete dir="${dist.dir}" />
+	</target>
+
+	<target name="compile" depends="clean" description="Compile main source tree java files">
+		<mkdir dir="${classes.dir}" />
+		<javac destdir="${classes.dir}" debug="true" deprecation="false" optimize="false" failonerror="true">
+			<src path="${src.dir}" />
+			<classpath refid="compile.classpath" />
+		</javac>
+	</target>
+
+	<target name="dist" depends="compile" description="Create binary distribution">
+		<mkdir dir="${dist.dir}" />
+		<jar destfile="${dist.jar}" basedir="${classes.dir}">
+			<manifest>
+				<attribute name="Main-Class" value="${main-class}" />
+			</manifest>
+			
+			<zipfileset src="${lib.dir}/log4j-1.2.15.jar" />
+		</jar>
+	</target>
+
+	<target name="run" depends="dist" description="Run the jar file">
+		<java jar="${dist.jar}" fork="true" />
+	</target>
+
+</project>
+
